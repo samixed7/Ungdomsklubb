@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Ungdomsklubb Kasse</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f2f2f7; color: #1c1c1e; min-height: 100vh; }
+
+/* HEADER */
+.header { background: #1c1c1e; color: white; padding: 14px 16px; position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; }
+.header-logo { font-size: 20px; font-weight: 800; color: #ffd60a; }
+.header-date { font-size: 12px; color: rgba(255,255,255,0.5); }
+
+/* MAIN TABS */
+.main-tabs { background: #1c1c1e; display: flex; overflow-x: auto; border-bottom: 2px solid #e63946; }
+.main-tabs::-webkit-scrollbar { display: none; }
+.main-tab { padding: 10px 16px; font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.4); border-bottom: 3px solid transparent; margin-bottom: -2px; cursor: pointer; white-space: nowrap; background: none; border-top: none; border-left: none; border-right: none; text-transform: uppercase; letter-spacing: 0.5px; }
+.main-tab.active { color: #ffd60a; border-bottom-color: #ffd60a; }
+
+/* PERSON BAR */
+.person-bar { background: white; border-bottom: 1px solid #e5e5ea; padding: 10px 12px; display: flex; gap: 8px; overflow-x: auto; align-items: center; }
+.person-bar::-webkit-scrollbar { display: none; }
+.person-btn { padding: 8px 14px; border-radius: 20px; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; flex-shrink: 0; border: 2px solid; transition: all 0.15s; }
+.person-btn.active { color: white; }
+.add-person-btn { padding: 8px 14px; border-radius: 20px; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; flex-shrink: 0; border: 2px dashed #8e8e93; background: transparent; color: #8e8e93; }
+
+/* PAGE */
+.page { max-width: 600px; margin: 0 auto; padding: 14px 12px 100px; display: none; }
+.page.active { display: block; }
+
+/* SECTION */
+.section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: #8e8e93; margin: 16px 0 8px; }
+
+/* PRODUCT GRID */
+.product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.product-btn { background: white; border-radius: 12px; padding: 12px 8px; cursor: pointer; text-align: center; border: 2px solid; transition: transform 0.1s; }
+.product-btn:active { transform: scale(0.96); }
+.product-emoji { font-size: 24px; display: block; margin-bottom: 4px; }
+.product-name { font-size: 12px; font-weight: 700; color: #1c1c1e; line-height: 1.3; }
+.product-price { font-size: 14px; font-weight: 800; color: #e63946; margin-top: 2px; }
+
+/* CART */
+.cart-box { background: white; border-radius: 16px; overflow: hidden; margin-top: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+.cart-head { color: white; padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; }
+.cart-head-title { font-size: 15px; font-weight: 800; }
+.cart-clear { background: none; border: none; color: rgba(255,255,255,0.6); font-size: 13px; font-weight: 700; cursor: pointer; }
+.cart-empty { padding: 28px; text-align: center; color: #8e8e93; font-size: 13px; }
+.cart-row { display: flex; align-items: center; padding: 10px 14px; gap: 8px; border-bottom: 1px solid #f2f2f7; }
+.cart-row-name { flex: 1; font-size: 13px; font-weight: 600; }
+.qty-wrap { display: flex; align-items: center; gap: 6px; }
+.qty-btn { width: 26px; height: 26px; border-radius: 50%; border: none; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.qty-btn.minus { background: #fee2e2; color: #e63946; }
+.qty-btn.plus { background: #dcfce7; color: #16a34a; }
+.qty-num { font-size: 14px; font-weight: 800; min-width: 22px; text-align: center; }
+.cart-row-price { font-size: 14px; font-weight: 800; color: #e63946; min-width: 60px; text-align: right; }
+.cart-footer { padding: 14px; border-top: 1px solid #f2f2f7; }
+.total-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.total-label { font-size: 13px; font-weight: 600; color: #8e8e93; }
+.total-val { font-size: 24px; font-weight: 900; }
+.pay-btn { width: 100%; color: white; border: none; border-radius: 12px; padding: 14px; font-size: 17px; font-weight: 800; cursor: pointer; transition: opacity 0.15s; }
+.pay-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* OTHER TABS */
+.open-tabs { margin-top: 16px; }
+.open-tab-row { background: white; border-radius: 12px; padding: 12px 14px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid; }
+.open-tab-name { font-size: 14px; font-weight: 800; }
+.open-tab-items { font-size: 11px; color: #8e8e93; margin-top: 2px; }
+.open-tab-right { text-align: right; }
+.open-tab-total { font-size: 16px; font-weight: 900; color: #e63946; }
+.open-tab-pay { margin-top: 4px; color: white; border: none; border-radius: 8px; padding: 6px 12px; font-size: 12px; font-weight: 700; cursor: pointer; }
+
+/* EMPTY STATE */
+.empty-state { text-align: center; padding: 60px 20px; color: #8e8e93; }
+.empty-state-icon { font-size: 56px; margin-bottom: 12px; }
+.empty-state-title { font-size: 17px; font-weight: 700; margin-bottom: 6px; color: #3a3a3c; }
+.empty-state-sub { font-size: 14px; }
+
+/* SUMMARY */
+.kpi-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.kpi-card { background: white; border-radius: 12px; padding: 14px 10px; text-align: center; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.kpi-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #8e8e93; margin-bottom: 4px; }
+.kpi-val { font-size: 17px; font-weight: 900; }
+.cat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+.cat-card { background: white; border-radius: 12px; padding: 12px 10px; text-align: center; border-left: 3px solid; }
+.cat-card-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #8e8e93; margin-bottom: 4px; }
+.cat-card-val { font-size: 17px; font-weight: 900; }
+.top-list { background: white; border-radius: 12px; overflow: hidden; }
+.top-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; border-bottom: 1px solid #f2f2f7; font-size: 13px; }
+.top-row:last-child { border-bottom: none; }
+.top-row-name { font-weight: 600; }
+.top-row-right { display: flex; gap: 12px; align-items: center; }
+.top-row-qty { color: #8e8e93; }
+.top-row-amt { font-weight: 800; color: #e63946; }
+
+/* HISTORY */
+.day-group { margin-bottom: 16px; }
+.day-head { background: #1c1c1e; color: white; padding: 10px 14px; border-radius: 12px 12px 0 0; display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 700; }
+.day-total { font-size: 17px; font-weight: 900; color: #ffd60a; }
+.sale-row { background: white; border: 1px solid #e5e5ea; border-top: none; padding: 10px 14px; display: flex; gap: 8px; align-items: center; font-size: 12px; flex-wrap: wrap; }
+.sale-row:last-child { border-radius: 0 0 12px 12px; }
+.sale-time { color: #8e8e93; font-weight: 700; min-width: 50px; }
+.sale-person { font-weight: 800; color: #2a9d8f; }
+.sale-items { flex: 1; color: #3a3a3c; }
+.sale-amt { font-weight: 800; color: #e63946; }
+
+/* SETTINGS */
+.setting-row { background: white; border-radius: 12px; padding: 12px 14px; display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.setting-emoji { font-size: 22px; }
+.setting-info { flex: 1; }
+.setting-name { font-size: 14px; font-weight: 700; }
+.setting-cat { font-size: 11px; color: #8e8e93; text-transform: uppercase; letter-spacing: 0.5px; }
+.setting-kr { font-size: 13px; color: #8e8e93; font-weight: 600; }
+.price-input { width: 70px; padding: 7px 8px; border: 2px solid #e5e5ea; border-radius: 8px; font-size: 15px; font-weight: 800; text-align: center; font-family: inherit; outline: none; }
+.price-input:focus { border-color: #2a9d8f; }
+.save-btn { background: #2a9d8f; color: white; border: none; border-radius: 12px; padding: 14px; width: 100%; font-size: 16px; font-weight: 800; cursor: pointer; margin-top: 8px; }
+
+/* MODAL */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 500; display: flex; align-items: center; justify-content: center; padding: 16px; }
+.modal { background: white; border-radius: 20px; padding: 24px; width: 100%; max-width: 340px; }
+.modal-title { font-size: 20px; font-weight: 800; margin-bottom: 4px; }
+.modal-sum { font-size: 36px; font-weight: 900; color: #e63946; margin-bottom: 6px; }
+.modal-items { font-size: 12px; color: #8e8e93; margin-bottom: 16px; line-height: 1.6; }
+.method-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+.method-btn { padding: 12px; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; border: 2px solid #e5e5ea; background: #f2f2f7; color: #8e8e93; font-family: inherit; }
+.method-btn.active-kontant { border-color: #ffd60a; background: rgba(255,214,10,0.1); color: #1c1c1e; }
+.method-btn.active-kort { border-color: #7c3aed; background: #ede9fe; color: #7c3aed; }
+.modal-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #8e8e93; margin-bottom: 6px; }
+.modal-input { width: 100%; padding: 12px; border: 2px solid #e5e5ea; border-radius: 10px; font-size: 22px; font-weight: 800; font-family: inherit; color: #1c1c1e; background: #f2f2f7; outline: none; margin-bottom: 10px; }
+.modal-input:focus { border-color: #2a9d8f; }
+.change-box { background: #d1fae5; border-radius: 10px; padding: 10px 14px; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; }
+.change-label { font-size: 13px; font-weight: 600; color: #065f46; }
+.change-val { font-size: 20px; font-weight: 900; color: #065f46; }
+.kort-box { background: #ede9fe; border-radius: 10px; padding: 14px; margin-bottom: 14px; text-align: center; }
+.modal-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.cancel-btn { background: #f2f2f7; color: #8e8e93; border: none; border-radius: 10px; padding: 13px; font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit; }
+.confirm-btn { color: white; border: none; border-radius: 10px; padding: 13px; font-size: 15px; font-weight: 800; cursor: pointer; font-family: inherit; }
+.name-input { width: 100%; padding: 14px; border: 2px solid #e5e5ea; border-radius: 10px; font-size: 18px; font-weight: 700; font-family: inherit; color: #1c1c1e; background: #f2f2f7; outline: none; margin-bottom: 14px; }
+.name-input:focus { border-color: #2a9d8f; }
+
+/* TOAST */
+.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(120px); background: #2a9d8f; color: white; padding: 12px 24px; border-radius: 40px; font-size: 14px; font-weight: 700; z-index: 1000; transition: transform 0.3s cubic-bezier(.34,1.56,.64,1); white-space: nowrap; pointer-events: none; }
+.toast.show { transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-logo">🎱 Ungdomsklubb</div>
+  <div class="header-date" id="headerDate"></div>
+</div>
+
+<div class="main-tabs">
+  <button class="main-tab active" onclick="showMainTab('kasse')">🛒 Kasse</button>
+  <button class="main-tab" onclick="showMainTab('dag')">📊 Dagsoppgjør</button>
+  <button class="main-tab" onclick="showMainTab('historikk')">📋 Historikk</button>
+  <button class="main-tab" onclick="showMainTab('priser')">⚙️ Priser</button>
+</div>
+
+<!-- KASSE -->
+<div id="page-kasse" class="page active">
+  <div class="person-bar" id="personBar">
+    <button class="add-person-btn" onclick="openNewPersonModal()">+ Ny person</button>
+  </div>
+  <div id="kasseContent"></div>
+</div>
+
+<!-- DAG -->
+<div id="page-dag" class="page">
+  <div class="section-label">Dagsoppgjør</div>
+  <div class="kpi-grid" id="kpiGrid"></div>
+  <div class="section-label">Per kategori</div>
+  <div class="cat-grid" id="catGrid"></div>
+  <div class="section-label">Mest solgt i dag</div>
+  <div class="top-list" id="topList"></div>
+</div>
+
+<!-- HISTORIKK -->
+<div id="page-historikk" class="page">
+  <div class="section-label">Salgshistorikk</div>
+  <div id="historyList"></div>
+</div>
+
+<!-- PRISER -->
+<div id="page-priser" class="page">
+  <div class="section-label">Endre priser</div>
+  <div id="settingsList"></div>
+  <button class="save-btn" onclick="savePrices()">💾 Lagre priser</button>
+</div>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="newPersonModal" style="display:none" onclick="if(event.target===this)closeNewPersonModal()">
+  <div class="modal">
+    <div class="modal-title">👤 Ny person</div>
+    <p style="font-size:13px;color:#8e8e93;margin-bottom:12px;">Skriv inn navn på kunden</p>
+    <input class="name-input" id="newPersonName" type="text" placeholder="Navn..." onkeydown="if(event.key==='Enter')addPerson()">
+    <div class="modal-btns">
+      <button class="cancel-btn" onclick="closeNewPersonModal()">Avbryt</button>
+      <button class="confirm-btn" style="background:#2a9d8f" onclick="addPerson()">Legg til</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="payModal" style="display:none" onclick="if(event.target===this)closePayModal()">
+  <div class="modal">
+    <div class="modal-title" id="payModalTitle">💳 Betaling</div>
+    <div class="modal-sum" id="payModalSum"></div>
+    <div class="modal-items" id="payModalItems"></div>
+    <div class="modal-label">Betalingsmetode</div>
+    <div class="method-grid">
+      <button class="method-btn active-kontant" id="btnKontant" onclick="setPayMethod('kontant')">💵 Kontant</button>
+      <button class="method-btn" id="btnKort" onclick="setPayMethod('kort')">💳 Kort</button>
+    </div>
+    <div id="kontantSection">
+      <div class="modal-label">Mottatt (kr)</div>
+      <input class="modal-input" id="cashInput" type="number" placeholder="0" oninput="calcChange()">
+      <div class="change-box">
+        <span class="change-label">Veksel</span>
+        <span class="change-val" id="changeVal">kr 0,-</span>
+      </div>
+    </div>
+    <div id="kortSection" style="display:none">
+      <div class="kort-box">
+        <div style="font-size:28px;margin-bottom:4px">💳</div>
+        <div style="font-size:13px;font-weight:700;color:#7c3aed">Kortbetaling — ingen veksel</div>
+      </div>
+    </div>
+    <div class="modal-btns">
+      <button class="cancel-btn" onclick="closePayModal()">Avbryt</button>
+      <button class="confirm-btn" id="confirmPayBtn" onclick="confirmSale()">Bekreft</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ---- DATA ----
+const COLORS = ['#e63946','#2a9d8f','#1a6b8a','#7c3aed','#e76f51','#16a34a','#d62828','#db2777'];
+const CAT_INFO = {
+  pool:     { label:'🎱 Biljard',    border:'#1a6b8a', bg:'#d4edf5', text:'#1a6b8a' },
+  bordball: { label:'⚽ Bordball',   border:'#16a34a', bg:'#dcfce7', text:'#16a34a' },
+  drink:    { label:'🥤 Drikke',     border:'#c9a227', bg:'#fdf6e3', text:'#c9a227' },
+  food:     { label:'🍕 Mat',        border:'#e76f51', bg:'#fdeee9', text:'#e76f51' },
+  kort:     { label:'🃏 Kortspill',  border:'#7c3aed', bg:'#ede9fe', text:'#7c3aed' },
+  other:    { label:'🎟️ Annet',      border:'#2a9d8f', bg:'#d6f0ed', text:'#2a9d8f' },
+};
+
+let products = JSON.parse(localStorage.getItem('yk_products') || 'null') || [
+  {id:1,  cat:'pool',    emoji:'⏱️', name:'5 min biljard',     price:13},
+  {id:2,  cat:'pool',    emoji:'⏱️', name:'10 min biljard',    price:25},
+  {id:3,  cat:'pool',    emoji:'⏱️', name:'15 min biljard',    price:38},
+  {id:4,  cat:'pool',    emoji:'⏱️', name:'20 min biljard',    price:50},
+  {id:5,  cat:'pool',    emoji:'⏱️', name:'25 min biljard',    price:63},
+  {id:6,  cat:'pool',    emoji:'⏱️', name:'30 min biljard',    price:75},
+  {id:7,  cat:'pool',    emoji:'⏱️', name:'35 min biljard',    price:88},
+  {id:8,  cat:'pool',    emoji:'⏱️', name:'40 min biljard',    price:100},
+  {id:9,  cat:'pool',    emoji:'⏱️', name:'45 min biljard',    price:113},
+  {id:10, cat:'pool',    emoji:'⏱️', name:'50 min biljard',    price:125},
+  {id:11, cat:'pool',    emoji:'⏱️', name:'55 min biljard',    price:138},
+  {id:12, cat:'pool',    emoji:'🏆', name:'1 time biljard',    price:150},
+  {id:13, cat:'bordball',emoji:'⚽', name:'Bordball (1 kamp)', price:20},
+  {id:14, cat:'drink',   emoji:'🥤', name:'Brus',              price:30},
+  {id:15, cat:'drink',   emoji:'🍺', name:'Pils',              price:60},
+  {id:16, cat:'drink',   emoji:'💧', name:'Vann',              price:15},
+  {id:17, cat:'drink',   emoji:'🍵', name:'Te',                price:20},
+  {id:18, cat:'drink',   emoji:'☕', name:'Kaffe',             price:30},
+  {id:19, cat:'food',    emoji:'🍔', name:'Hamburger',         price:120},
+  {id:20, cat:'food',    emoji:'🥩', name:'Rød Tibs',          price:250},
+  {id:21, cat:'food',    emoji:'🍗', name:'Hvit Tibs',         price:250},
+  {id:22, cat:'food',    emoji:'🍟', name:'Chips',             price:49},
+  {id:23, cat:'food',    emoji:'🌶️', name:'Kicha Fitfit',      price:149},
+  {id:24, cat:'other',   emoji:'🎟️', name:'Inngangspenger',   price:30},
+  {id:25, cat:'other',   emoji:'💳', name:'Medlemsavgift',     price:100},
+  {id:26, cat:'kort',    emoji:'🃏', name:'1 kortspill-runde', price:25},
+  {id:27, cat:'kort',    emoji:'🎮', name:'Turneringsavgift',  price:50},
+  {id:28, cat:'kort',    emoji:'🃏', name:'Kortsett (kjøp)',   price:80},
+];
+
+let sales = JSON.parse(localStorage.getItem('yk_sales') || '[]');
+let persons = JSON.parse(localStorage.getItem('yk_persons') || '[]');
+let activePersonId = persons.length > 0 ? persons[0].id : null;
+let payingPersonId = null;
+let payMethod = 'kontant';
+
+function save() {
+  localStorage.setItem('yk_products', JSON.stringify(products));
+  localStorage.setItem('yk_sales', JSON.stringify(sales));
+  localStorage.setItem('yk_persons', JSON.stringify(persons));
+}
+
+function kr(n) { return 'kr ' + Number(n).toLocaleString('no-NO') + ',-'; }
+function today() { return new Date().toISOString().slice(0,10); }
+function nowTime() { return new Date().toTimeString().slice(0,5); }
+function personTotal(p) { return (p.items||[]).reduce((s,x) => s + x.price*x.qty, 0); }
+
+// ---- TABS ----
+function showMainTab(tab) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.main-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-'+tab).classList.add('active');
+  event.target.classList.add('active');
+  if (tab === 'dag') renderDag();
+  if (tab === 'historikk') renderHistorikk();
+  if (tab === 'priser') renderPriser();
+}
+
+// ---- PERSON BAR ----
+function renderPersonBar() {
+  const bar = document.getElementById('personBar');
+  bar.innerHTML = persons.map(p => {
+    const total = personTotal(p);
+    const isActive = p.id === activePersonId;
+    return `<button class="person-btn ${isActive?'active':''}" 
+      style="border-color:${p.color};background:${isActive?p.color:'transparent'};color:${isActive?'white':p.color}"
+      onclick="selectPerson(${p.id})">
+      👤 ${p.name}${total > 0 ? ' <span style="background:rgba(255,255,255,0.25);border-radius:10px;padding:1px 7px;font-size:11px">' + kr(total) + '</span>' : ''}
+    </button>`;
+  }).join('') + `<button class="add-person-btn" onclick="openNewPersonModal()">+ Ny person</button>`;
+}
+
+function selectPerson(id) {
+  activePersonId = id;
+  renderPersonBar();
+  renderKasse();
+}
+
+// ---- KASSE ----
+function renderKasse() {
+  const content = document.getElementById('kasseContent');
+  const person = persons.find(p => p.id === activePersonId);
+
+  if (!person) {
+    content.innerHTML = `<div class="empty-state">
+      <div class="empty-state-icon">👤</div>
+      <div class="empty-state-title">Ingen person valgt</div>
+      <div class="empty-state-sub">Trykk "+ Ny person" for å begynne</div>
+    </div>`;
+    return;
+  }
+
+  let html = '';
+  Object.entries(CAT_INFO).forEach(([cat, info]) => {
+    const prods = products.filter(p => p.cat === cat);
+    if (prods.length === 0) return;
+    html += `<div class="section-label">${info.label}</div><div class="product-grid">`;
+    prods.forEach(p => {
+      html += `<button class="product-btn" style="border-color:${info.border};background:${info.bg}" onclick="addToCart(${p.id})">
+        <span class="product-emoji">${p.emoji}</span>
+        <div class="product-name">${p.name}</div>
+        <div class="product-price">${kr(p.price)}</div>
+      </button>`;
+    });
+    html += `</div>`;
+  });
+
+  // Cart
+  const total = personTotal(person);
+  html += `<div class="cart-box">
+    <div class="cart-head" style="background:${person.color}">
+      <span class="cart-head-title">👤 ${person.name}</span>
+      <button class="cart-clear" onclick="clearCart()">Tøm</button>
+    </div>`;
+
+  if (person.items.length === 0) {
+    html += `<div class="cart-empty">Ingen varer ennå — trykk på varene over</div>`;
+  } else {
+    person.items.forEach(x => {
+      html += `<div class="cart-row">
+        <div class="cart-row-name">${x.emoji} ${x.name}</div>
+        <div class="qty-wrap">
+          <button class="qty-btn minus" onclick="changeQty(${x.id},-1)">−</button>
+          <span class="qty-num">${x.qty}</span>
+          <button class="qty-btn plus" onclick="changeQty(${x.id},1)">+</button>
+        </div>
+        <div class="cart-row-price">${kr(x.price*x.qty)}</div>
+      </div>`;
+    });
+  }
+
+  html += `<div class="cart-footer">
+    <div class="total-row">
+      <span class="total-label">TOTALT</span>
+      <span class="total-val">${kr(total)}</span>
+    </div>
+    <button class="pay-btn" style="background:${person.color}" ${person.items.length===0?'disabled':''} onclick="openPayModal(${person.id})">
+      BETAL — ${person.name}
+    </button>
+  </div></div>`;
+
+  // Andre åpne regninger
+  const others = persons.filter(p => p.id !== activePersonId && p.items.length > 0);
+  if (others.length > 0) {
+    html += `<div class="section-label">Andre åpne regninger</div><div class="open-tabs">`;
+    others.forEach(p => {
+      html += `<div class="open-tab-row" style="border-left-color:${p.color}">
+        <div>
+          <div class="open-tab-name" style="color:${p.color}">👤 ${p.name}</div>
+          <div class="open-tab-items">${p.items.map(x=>`${x.qty}× ${x.name}`).join(', ')}</div>
+        </div>
+        <div class="open-tab-right">
+          <div class="open-tab-total">${kr(personTotal(p))}</div>
+          <button class="open-tab-pay" style="background:${p.color}" onclick="openPayModal(${p.id})">Betal</button>
+        </div>
+      </div>`;
+    });
+    html += `</div>`;
+  }
+
+  content.innerHTML = html;
+}
+
+function addToCart(pid) {
+  const product = products.find(x => x.id === pid);
+  const person = persons.find(p => p.id === activePersonId);
+  if (!person) return;
+  const ex = person.items.find(x => x.id === pid);
+  if (ex) ex.qty++;
+  else person.items.push({...product, qty:1});
+  save();
+  renderPersonBar();
+  renderKasse();
+}
+
+function changeQty(pid, delta) {
+  const person = persons.find(p => p.id === activePersonId);
+  if (!person) return;
+  const i = person.items.findIndex(x => x.id === pid);
+  if (i < 0) return;
+  person.items[i].qty += delta;
+  if (person.items[i].qty <= 0) person.items.splice(i, 1);
+  save();
+  renderPersonBar();
+  renderKasse();
+}
+
+function clearCart() {
+  const person = persons.find(p => p.id === activePersonId);
+  if (person) { person.items = []; save(); renderPersonBar(); renderKasse(); }
+}
+
+// ---- PERSONS ----
+function openNewPersonModal() {
+  document.getElementById('newPersonModal').style.display = 'flex';
+  document.getElementById('newPersonName').value = '';
+  setTimeout(() => document.getElementById('newPersonName').focus(), 100);
+}
+function closeNewPersonModal() { document.getElementById('newPersonModal').style.display = 'none'; }
+
+function addPerson() {
+  const name = document.getElementById('newPersonName').value.trim();
+  if (!name) return;
+  const id = Date.now();
+  const color = COLORS[persons.length % COLORS.length];
+  persons.push({id, name, color, items:[]});
+  activePersonId = id;
+  save();
+  closeNewPersonModal();
+  renderPersonBar();
+  renderKasse();
+}
+
+// ---- PAYMENT ----
+function openPayModal(personId) {
+  payingPersonId = personId;
+  payMethod = 'kontant';
+  const person = persons.find(p => p.id === personId);
+  const total = personTotal(person);
+  document.getElementById('payModalTitle').textContent = `💳 Betal — ${person.name}`;
+  document.getElementById('payModalSum').textContent = kr(total);
+  document.getElementById('payModalSum').style.color = person.color;
+  document.getElementById('payModalItems').textContent = person.items.map(x=>`${x.qty}× ${x.name}`).join(' · ');
+  document.getElementById('confirmPayBtn').style.background = person.color;
+  document.getElementById('cashInput').value = '';
+  document.getElementById('changeVal').textContent = 'kr 0,-';
+  setPayMethod('kontant');
+  document.getElementById('payModal').style.display = 'flex';
+  setTimeout(() => document.getElementById('cashInput').focus(), 100);
+}
+
+function closePayModal() { document.getElementById('payModal').style.display = 'none'; }
+
+function setPayMethod(method) {
+  payMethod = method;
+  const kBtn = document.getElementById('btnKontant');
+  const cBtn = document.getElementById('btnKort');
+  if (method === 'kontant') {
+    kBtn.className = 'method-btn active-kontant';
+    cBtn.className = 'method-btn';
+    document.getElementById('kontantSection').style.display = 'block';
+    document.getElementById('kortSection').style.display = 'none';
+  } else {
+    cBtn.className = 'method-btn active-kort';
+    kBtn.className = 'method-btn';
+    document.getElementById('kontantSection').style.display = 'none';
+    document.getElementById('kortSection').style.display = 'block';
+  }
+}
+
+function calcChange() {
+  const person = persons.find(p => p.id === payingPersonId);
+  const total = personTotal(person);
+  const received = parseFloat(document.getElementById('cashInput').value) || 0;
+  const change = Math.max(0, received - total);
+  document.getElementById('changeVal').textContent = kr(change);
+}
+
+function confirmSale() {
+  const person = persons.find(p => p.id === payingPersonId);
+  if (!person) return;
+  const total = personTotal(person);
+  sales.push({
+    id: Date.now(),
+    date: today(),
+    time: nowTime(),
+    person: person.name,
+    items: person.items.map(x => ({name: x.emoji+' '+x.name, qty: x.qty, price: x.price, cat: x.cat})),
+    total,
+    method: payMethod
+  });
+  persons = persons.filter(p => p.id !== payingPersonId);
+  if (activePersonId === payingPersonId) activePersonId = persons.length > 0 ? persons[0].id : null;
+  save();
+  closePayModal();
+  showToast(`✅ ${person.name} betalt! ${kr(total)}`);
+  renderPersonBar();
+  renderKasse();
+}
+
+// ---- DAG ----
+function renderDag() {
+  const ts = sales.filter(s => s.date === today());
+  const total = ts.reduce((s,x) => s+x.total, 0);
+  const kontant = ts.filter(s=>s.method!=='kort').reduce((s,x)=>s+x.total,0);
+  const kort = ts.filter(s=>s.method==='kort').reduce((s,x)=>s+x.total,0);
+
+  document.getElementById('kpiGrid').innerHTML = [
+    ['💵 Kontant', kontant, '#ffd60a', '#1c1c1e'],
+    ['💳 Kort', kort, '#7c3aed', '#7c3aed'],
+    ['🧾 Totalt', total, '#e63946', '#e63946']
+  ].map(([label,val,border,color]) => `
+    <div class="kpi-card" style="border-top:3px solid ${border}">
+      <div class="kpi-label">${label}</div>
+      <div class="kpi-val" style="color:${color}">${kr(val)}</div>
+    </div>`).join('');
+
+  const catTotals = {};
+  ts.forEach(s => s.items.forEach(item => {
+    if (!catTotals[item.cat]) catTotals[item.cat] = 0;
+    catTotals[item.cat] += item.price * item.qty;
+  }));
+  document.getElementById('catGrid').innerHTML = Object.entries(CAT_INFO).map(([cat,info]) => `
+    <div class="cat-card" style="border-left-color:${info.border}">
+      <div class="cat-card-label">${info.label}</div>
+      <div class="cat-card-val" style="color:${info.text}">${kr(catTotals[cat]||0)}</div>
+    </div>`).join('');
+
+  const itemMap = {};
+  ts.forEach(s => s.items.forEach(item => {
+    if (!itemMap[item.name]) itemMap[item.name] = {qty:0,total:0};
+    itemMap[item.name].qty += item.qty;
+    itemMap[item.name].total += item.price * item.qty;
+  }));
+  const sorted = Object.entries(itemMap).sort((a,b)=>b[1].total-a[1].total);
+  document.getElementById('topList').innerHTML = sorted.length === 0
+    ? `<div style="padding:20px;text-align:center;color:#8e8e93;font-size:13px">Ingen salg i dag ennå</div>`
+    : sorted.map(([name,d]) => `
+      <div class="top-row">
+        <span class="top-row-name">${name}</span>
+        <div class="top-row-right">
+          <span class="top-row-qty">${d.qty} stk</span>
+          <span class="top-row-amt">${kr(d.total)}</span>
+        </div>
+      </div>`).join('');
+}
+
+// ---- HISTORIKK ----
+function renderHistorikk() {
+  const grouped = {};
+  [...sales].reverse().forEach(s => {
+    if (!grouped[s.date]) grouped[s.date] = [];
+    grouped[s.date].push(s);
+  });
+  const el = document.getElementById('historyList');
+  if (Object.keys(grouped).length === 0) {
+    el.innerHTML = `<div style="text-align:center;color:#8e8e93;padding:40px;font-size:14px">Ingen salg ennå</div>`;
+    return;
+  }
+  el.innerHTML = Object.entries(grouped).map(([date, daySales]) => {
+    const dayTotal = daySales.reduce((s,x)=>s+x.total,0);
+    const dateStr = new Date(date+'T12:00:00').toLocaleDateString('no-NO',{weekday:'long',day:'numeric',month:'long'});
+    return `<div class="day-group">
+      <div class="day-head"><span>${dateStr}</span><span class="day-total">${kr(dayTotal)}</span></div>
+      ${daySales.map(s => `
+        <div class="sale-row">
+          <span class="sale-time">${s.time} ${s.method==='kort'?'💳':'💵'}</span>
+          ${s.person?`<span class="sale-person">👤 ${s.person}</span>`:''}
+          <span class="sale-items">${s.items.map(i=>`${i.qty}× ${i.name}`).join(', ')}</span>
+          <span class="sale-amt">${kr(s.total)}</span>
+        </div>`).join('')}
+    </div>`;
+  }).join('');
+}
+
+// ---- PRISER ----
+function renderPriser() {
+  document.getElementById('settingsList').innerHTML = products.map(p => `
+    <div class="setting-row">
+      <span class="setting-emoji">${p.emoji}</span>
+      <div class="setting-info">
+        <div class="setting-name">${p.name}</div>
+        <div class="setting-cat">${CAT_INFO[p.cat]?.label||p.cat}</div>
+      </div>
+      <span class="setting-kr">kr</span>
+      <input class="price-input" type="number" id="price_${p.id}" value="${p.price}">
+    </div>`).join('');
+}
+
+function savePrices() {
+  products.forEach(p => {
+    const val = parseFloat(document.getElementById('price_'+p.id).value);
+    if (!isNaN(val) && val >= 0) p.price = val;
+  });
+  save();
+  showToast('✅ Priser lagret!');
+  renderKasse();
+}
+
+// ---- TOAST ----
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ---- INIT ----
+document.getElementById('headerDate').textContent = new Date().toLocaleDateString('no-NO',{weekday:'long',day:'numeric',month:'long'});
+renderPersonBar();
+renderKasse();
+</script>
+</body>
+</html>
