@@ -2,627 +2,233 @@
 <html lang="no">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ungdomsklubb — Kassasystem</title>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Bebas+Neue&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Ungdomsklubb Kasse</title>
 <style>
-  :root {
-    --bg: #f7f4ef;
-    --surface: #ffffff;
-    --surface2: #f0ede7;
-    --border: #e0dbd2;
-    --accent: #e63946;
-    --accent2: #2a9d8f;
-    --accent3: #e9c46a;
-    --dark: #1d1a16;
-    --text: #2c2825;
-    --muted: #9a9088;
-    --pool: #1a6b8a;
-    --pool-light: #d4edf5;
-    --drink: #e9c46a;
-    --drink-light: #fdf6e3;
-    --food: #e76f51;
-    --food-light: #fdeee9;
-    --member: #2a9d8f;
-    --member-light: #d6f0ed;
-    --kort: #7c3aed;
-    --kort-light: #ede9fe;
-  }
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f2f2f7; color: #1c1c1e; min-height: 100vh; }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+/* HEADER */
+.header { background: #1c1c1e; color: white; padding: 14px 16px; position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; }
+.header-logo { font-size: 20px; font-weight: 800; color: #ffd60a; }
+.header-date { font-size: 12px; color: rgba(255,255,255,0.5); }
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Nunito', sans-serif;
-    min-height: 100vh;
-  }
+/* MAIN TABS */
+.main-tabs { background: #1c1c1e; display: flex; overflow-x: auto; border-bottom: 2px solid #e63946; }
+.main-tabs::-webkit-scrollbar { display: none; }
+.main-tab { padding: 10px 16px; font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.4); border-bottom: 3px solid transparent; margin-bottom: -2px; cursor: pointer; white-space: nowrap; background: none; border-top: none; border-left: none; border-right: none; text-transform: uppercase; letter-spacing: 0.5px; }
+.main-tab.active { color: #ffd60a; border-bottom-color: #ffd60a; }
 
-  /* HEADER */
-  header {
-    background: var(--dark);
-    color: white;
-    padding: 0 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 64px;
-    position: sticky;
-    top: 0;
-    z-index: 200;
-  }
-  .logo {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 28px;
-    letter-spacing: 2px;
-    color: var(--accent3);
-  }
-  .logo span { color: white; }
-  .header-date {
-    font-size: 13px;
-    color: rgba(255,255,255,0.5);
-    font-weight: 600;
-  }
+/* PERSON BAR */
+.person-bar { background: white; border-bottom: 1px solid #e5e5ea; padding: 10px 12px; display: flex; gap: 8px; overflow-x: auto; align-items: center; }
+.person-bar::-webkit-scrollbar { display: none; }
+.person-btn { padding: 8px 14px; border-radius: 20px; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; flex-shrink: 0; border: 2px solid; transition: all 0.15s; }
+.person-btn.active { color: white; }
+.add-person-btn { padding: 8px 14px; border-radius: 20px; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; flex-shrink: 0; border: 2px dashed #8e8e93; background: transparent; color: #8e8e93; }
 
-  /* TABS */
-  .tabs {
-    background: var(--dark);
-    display: flex;
-    padding: 0 24px;
-    border-bottom: 3px solid var(--accent);
-  }
-  .tab {
-    padding: 12px 24px;
-    font-size: 13px;
-    font-weight: 800;
-    color: rgba(255,255,255,0.4);
-    cursor: pointer;
-    border-bottom: 3px solid transparent;
-    margin-bottom: -3px;
-    letter-spacing: 0.5px;
-    transition: all 0.15s;
-    text-transform: uppercase;
-  }
-  .tab:hover { color: rgba(255,255,255,0.7); }
-  .tab.active { color: var(--accent3); border-bottom-color: var(--accent3); }
+/* PAGE */
+.page { max-width: 600px; margin: 0 auto; padding: 14px 12px 100px; display: none; }
+.page.active { display: block; }
 
-  /* MAIN */
-  .page { display: none; padding: 24px; max-width: 1000px; margin: 0 auto; }
-  .page.active { display: block; }
+/* SECTION */
+.section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: #8e8e93; margin: 16px 0 8px; }
 
-  /* POS PAGE */
-  .pos-layout {
-    display: grid;
-    grid-template-columns: 1fr 320px;
-    gap: 20px;
-    align-items: start;
-  }
+/* PRODUCT GRID */
+.product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.product-btn { background: white; border-radius: 12px; padding: 12px 8px; cursor: pointer; text-align: center; border: 2px solid; transition: transform 0.1s; }
+.product-btn:active { transform: scale(0.96); }
+.product-emoji { font-size: 24px; display: block; margin-bottom: 4px; }
+.product-name { font-size: 12px; font-weight: 700; color: #1c1c1e; line-height: 1.3; }
+.product-price { font-size: 14px; font-weight: 800; color: #e63946; margin-top: 2px; }
 
-  /* Product grid */
-  .section-label {
-    font-size: 11px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: var(--muted);
-    margin-bottom: 10px;
-    margin-top: 20px;
-  }
-  .section-label:first-child { margin-top: 0; }
+/* CART */
+.cart-box { background: white; border-radius: 16px; overflow: hidden; margin-top: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+.cart-head { color: white; padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; }
+.cart-head-title { font-size: 15px; font-weight: 800; }
+.cart-clear { background: none; border: none; color: rgba(255,255,255,0.6); font-size: 13px; font-weight: 700; cursor: pointer; }
+.cart-empty { padding: 28px; text-align: center; color: #8e8e93; font-size: 13px; }
+.cart-row { display: flex; align-items: center; padding: 10px 14px; gap: 8px; border-bottom: 1px solid #f2f2f7; }
+.cart-row-name { flex: 1; font-size: 13px; font-weight: 600; }
+.qty-wrap { display: flex; align-items: center; gap: 6px; }
+.qty-btn { width: 26px; height: 26px; border-radius: 50%; border: none; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.qty-btn.minus { background: #fee2e2; color: #e63946; }
+.qty-btn.plus { background: #dcfce7; color: #16a34a; }
+.qty-num { font-size: 14px; font-weight: 800; min-width: 22px; text-align: center; }
+.cart-row-price { font-size: 14px; font-weight: 800; color: #e63946; min-width: 60px; text-align: right; }
+.cart-footer { padding: 14px; border-top: 1px solid #f2f2f7; }
+.total-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.total-label { font-size: 13px; font-weight: 600; color: #8e8e93; }
+.total-val { font-size: 24px; font-weight: 900; }
+.pay-btn { width: 100%; color: white; border: none; border-radius: 12px; padding: 14px; font-size: 17px; font-weight: 800; cursor: pointer; transition: opacity 0.15s; }
+.pay-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-  .product-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin-bottom: 4px;
-  }
+/* OTHER TABS */
+.open-tabs { margin-top: 16px; }
+.open-tab-row { background: white; border-radius: 12px; padding: 12px 14px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid; }
+.open-tab-name { font-size: 14px; font-weight: 800; }
+.open-tab-items { font-size: 11px; color: #8e8e93; margin-top: 2px; }
+.open-tab-right { text-align: right; }
+.open-tab-total { font-size: 16px; font-weight: 900; color: #e63946; }
+.open-tab-pay { margin-top: 4px; color: white; border: none; border-radius: 8px; padding: 6px 12px; font-size: 12px; font-weight: 700; cursor: pointer; }
 
-  .product-btn {
-    background: var(--surface);
-    border: 2px solid var(--border);
-    border-radius: 14px;
-    padding: 14px 10px;
-    cursor: pointer;
-    text-align: center;
-    transition: all 0.15s;
-    position: relative;
-    overflow: hidden;
-  }
-  .product-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
-  .product-btn:active { transform: scale(0.97); }
+/* EMPTY STATE */
+.empty-state { text-align: center; padding: 60px 20px; color: #8e8e93; }
+.empty-state-icon { font-size: 56px; margin-bottom: 12px; }
+.empty-state-title { font-size: 17px; font-weight: 700; margin-bottom: 6px; color: #3a3a3c; }
+.empty-state-sub { font-size: 14px; }
 
-  .product-btn.pool { border-color: var(--pool); background: var(--pool-light); }
-  .product-btn.drink { border-color: var(--drink); background: var(--drink-light); }
-  .product-btn.food { border-color: var(--food); background: var(--food-light); }
-  .product-btn.member { border-color: var(--member); background: var(--member-light); }
-  .product-btn.kort { border-color: var(--kort); background: var(--kort-light); }
+/* SUMMARY */
+.kpi-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.kpi-card { background: white; border-radius: 12px; padding: 14px 10px; text-align: center; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+.kpi-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #8e8e93; margin-bottom: 4px; }
+.kpi-val { font-size: 17px; font-weight: 900; }
+.cat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+.cat-card { background: white; border-radius: 12px; padding: 12px 10px; text-align: center; border-left: 3px solid; }
+.cat-card-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #8e8e93; margin-bottom: 4px; }
+.cat-card-val { font-size: 17px; font-weight: 900; }
+.top-list { background: white; border-radius: 12px; overflow: hidden; }
+.top-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; border-bottom: 1px solid #f2f2f7; font-size: 13px; }
+.top-row:last-child { border-bottom: none; }
+.top-row-name { font-weight: 600; }
+.top-row-right { display: flex; gap: 12px; align-items: center; }
+.top-row-qty { color: #8e8e93; }
+.top-row-amt { font-weight: 800; color: #e63946; }
 
-  .product-emoji { font-size: 28px; margin-bottom: 4px; display: block; }
-  .product-name { font-size: 13px; font-weight: 800; color: var(--text); }
-  .product-price {
-    font-size: 15px;
-    font-weight: 900;
-    margin-top: 2px;
-    color: var(--accent);
-  }
+/* HISTORY */
+.day-group { margin-bottom: 16px; }
+.day-head { background: #1c1c1e; color: white; padding: 10px 14px; border-radius: 12px 12px 0 0; display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 700; }
+.day-total { font-size: 17px; font-weight: 900; color: #ffd60a; }
+.sale-row { background: white; border: 1px solid #e5e5ea; border-top: none; padding: 10px 14px; display: flex; gap: 8px; align-items: center; font-size: 12px; flex-wrap: wrap; }
+.sale-row:last-child { border-radius: 0 0 12px 12px; }
+.sale-time { color: #8e8e93; font-weight: 700; min-width: 50px; }
+.sale-person { font-weight: 800; color: #2a9d8f; }
+.sale-items { flex: 1; color: #3a3a3c; }
+.sale-amt { font-weight: 800; color: #e63946; }
 
-  /* Cart / Receipt */
-  .cart {
-    background: var(--surface);
-    border-radius: 18px;
-    border: 2px solid var(--border);
-    overflow: hidden;
-    position: sticky;
-    top: 120px;
-  }
-  .cart-head {
-    background: var(--dark);
-    color: white;
-    padding: 14px 18px;
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 20px;
-    letter-spacing: 2px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .cart-clear {
-    font-family: 'Nunito', sans-serif;
-    font-size: 12px;
-    font-weight: 700;
-    color: rgba(255,255,255,0.4);
-    cursor: pointer;
-    transition: color 0.15s;
-  }
-  .cart-clear:hover { color: var(--accent); }
+/* SETTINGS */
+.setting-row { background: white; border-radius: 12px; padding: 12px 14px; display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.setting-emoji { font-size: 22px; }
+.setting-info { flex: 1; }
+.setting-name { font-size: 14px; font-weight: 700; }
+.setting-cat { font-size: 11px; color: #8e8e93; text-transform: uppercase; letter-spacing: 0.5px; }
+.setting-kr { font-size: 13px; color: #8e8e93; font-weight: 600; }
+.price-input { width: 70px; padding: 7px 8px; border: 2px solid #e5e5ea; border-radius: 8px; font-size: 15px; font-weight: 800; text-align: center; font-family: inherit; outline: none; }
+.price-input:focus { border-color: #2a9d8f; }
+.save-btn { background: #2a9d8f; color: white; border: none; border-radius: 12px; padding: 14px; width: 100%; font-size: 16px; font-weight: 800; cursor: pointer; margin-top: 8px; }
 
-  .cart-items {
-    min-height: 180px;
-    max-height: 300px;
-    overflow-y: auto;
-    padding: 8px 0;
-  }
-  .cart-items::-webkit-scrollbar { width: 4px; }
-  .cart-items::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+/* MODAL */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 500; display: flex; align-items: center; justify-content: center; padding: 16px; }
+.modal { background: white; border-radius: 20px; padding: 24px; width: 100%; max-width: 340px; }
+.modal-title { font-size: 20px; font-weight: 800; margin-bottom: 4px; }
+.modal-sum { font-size: 36px; font-weight: 900; color: #e63946; margin-bottom: 6px; }
+.modal-items { font-size: 12px; color: #8e8e93; margin-bottom: 16px; line-height: 1.6; }
+.method-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+.method-btn { padding: 12px; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; border: 2px solid #e5e5ea; background: #f2f2f7; color: #8e8e93; font-family: inherit; }
+.method-btn.active-kontant { border-color: #ffd60a; background: rgba(255,214,10,0.1); color: #1c1c1e; }
+.method-btn.active-kort { border-color: #7c3aed; background: #ede9fe; color: #7c3aed; }
+.modal-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #8e8e93; margin-bottom: 6px; }
+.modal-input { width: 100%; padding: 12px; border: 2px solid #e5e5ea; border-radius: 10px; font-size: 22px; font-weight: 800; font-family: inherit; color: #1c1c1e; background: #f2f2f7; outline: none; margin-bottom: 10px; }
+.modal-input:focus { border-color: #2a9d8f; }
+.change-box { background: #d1fae5; border-radius: 10px; padding: 10px 14px; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; }
+.change-label { font-size: 13px; font-weight: 600; color: #065f46; }
+.change-val { font-size: 20px; font-weight: 900; color: #065f46; }
+.kort-box { background: #ede9fe; border-radius: 10px; padding: 14px; margin-bottom: 14px; text-align: center; }
+.modal-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.cancel-btn { background: #f2f2f7; color: #8e8e93; border: none; border-radius: 10px; padding: 13px; font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit; }
+.confirm-btn { color: white; border: none; border-radius: 10px; padding: 13px; font-size: 15px; font-weight: 800; cursor: pointer; font-family: inherit; }
+.name-input { width: 100%; padding: 14px; border: 2px solid #e5e5ea; border-radius: 10px; font-size: 18px; font-weight: 700; font-family: inherit; color: #1c1c1e; background: #f2f2f7; outline: none; margin-bottom: 14px; }
+.name-input:focus { border-color: #2a9d8f; }
 
-  .cart-empty {
-    padding: 40px 20px;
-    text-align: center;
-    color: var(--muted);
-    font-size: 13px;
-  }
-
-  .cart-row {
-    display: flex;
-    align-items: center;
-    padding: 8px 16px;
-    gap: 8px;
-    border-bottom: 1px solid var(--surface2);
-  }
-  .cart-row:last-child { border-bottom: none; }
-  .cart-row-name { flex: 1; font-size: 13px; font-weight: 700; }
-  .cart-row-qty {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .qty-btn {
-    width: 22px; height: 22px;
-    border-radius: 50%;
-    border: none;
-    font-size: 14px;
-    font-weight: 900;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.1s;
-  }
-  .qty-btn.minus { background: #fee2e2; color: var(--accent); }
-  .qty-btn.plus { background: #dcfce7; color: #16a34a; }
-  .qty-btn:hover { transform: scale(1.1); }
-  .qty-num { font-size: 14px; font-weight: 800; min-width: 20px; text-align: center; }
-  .cart-row-price { font-size: 14px; font-weight: 800; color: var(--accent); min-width: 54px; text-align: right; }
-
-  .cart-footer {
-    border-top: 2px solid var(--border);
-    padding: 14px 16px;
-  }
-  .cart-total-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
-  }
-  .cart-total-label { font-size: 14px; font-weight: 700; color: var(--muted); }
-  .cart-total-value { font-size: 26px; font-weight: 900; color: var(--dark); }
-
-  .btn-pay {
-    width: 100%;
-    background: var(--accent);
-    color: white;
-    border: none;
-    border-radius: 12px;
-    padding: 14px;
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 20px;
-    letter-spacing: 2px;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-  .btn-pay:hover { background: #c1121f; transform: translateY(-1px); }
-  .btn-pay:active { transform: scale(0.98); }
-  .btn-pay:disabled { background: var(--muted); cursor: not-allowed; transform: none; }
-
-  /* PAYMENT MODAL */
-  .modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(29,26,22,0.7);
-    backdrop-filter: blur(4px);
-    z-index: 500;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .modal {
-    background: var(--surface);
-    border-radius: 20px;
-    padding: 28px;
-    width: 340px;
-    box-shadow: 0 24px 60px rgba(0,0,0,0.3);
-    animation: popIn 0.2s cubic-bezier(.34,1.56,.64,1);
-  }
-  @keyframes popIn {
-    from { opacity: 0; transform: scale(0.85); }
-    to { opacity: 1; transform: scale(1); }
-  }
-  .modal-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 24px;
-    letter-spacing: 1px;
-    margin-bottom: 6px;
-  }
-  .modal-sum { font-size: 38px; font-weight: 900; color: var(--accent); margin-bottom: 20px; }
-  .modal-label { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 6px; }
-  .modal-input {
-    width: 100%;
-    padding: 12px 14px;
-    border: 2px solid var(--border);
-    border-radius: 10px;
-    font-size: 22px;
-    font-weight: 800;
-    font-family: 'Nunito', sans-serif;
-    color: var(--text);
-    outline: none;
-    margin-bottom: 12px;
-    background: var(--bg);
-  }
-  .modal-input:focus { border-color: var(--accent2); }
-  .modal-change {
-    background: var(--member-light);
-    border-radius: 10px;
-    padding: 12px 14px;
-    margin-bottom: 16px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .modal-change-label { font-size: 13px; font-weight: 700; color: var(--muted); }
-  .modal-change-val { font-size: 22px; font-weight: 900; color: var(--accent2); }
-  .modal-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .btn-cancel {
-    background: var(--surface2);
-    color: var(--muted);
-    border: none;
-    border-radius: 10px;
-    padding: 12px;
-    font-family: 'Nunito', sans-serif;
-    font-size: 14px;
-    font-weight: 800;
-    cursor: pointer;
-  }
-  .btn-confirm {
-    background: var(--accent2);
-    color: white;
-    border: none;
-    border-radius: 10px;
-    padding: 12px;
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 18px;
-    letter-spacing: 1px;
-    cursor: pointer;
-  }
-  .btn-confirm:hover { background: #21867a; }
-
-  /* SUCCESS TOAST */
-  .toast {
-    position: fixed;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%) translateY(100px);
-    background: var(--accent2);
-    color: white;
-    padding: 14px 28px;
-    border-radius: 40px;
-    font-size: 15px;
-    font-weight: 800;
-    z-index: 1000;
-    transition: transform 0.3s cubic-bezier(.34,1.56,.64,1);
-    white-space: nowrap;
-  }
-  .toast.show { transform: translateX(-50%) translateY(0); }
-
-  /* HISTORY PAGE */
-  .history-controls {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 20px;
-    align-items: center;
-    flex-wrap: wrap;
-  }
-  .history-controls input[type=date] {
-    background: var(--surface);
-    border: 2px solid var(--border);
-    border-radius: 10px;
-    padding: 9px 14px;
-    font-family: 'Nunito', sans-serif;
-    font-size: 14px;
-    color: var(--text);
-    font-weight: 700;
-    outline: none;
-    cursor: pointer;
-  }
-  .history-controls input[type=date]:focus { border-color: var(--accent2); }
-
-  .btn-secondary {
-    background: var(--surface);
-    border: 2px solid var(--border);
-    color: var(--text);
-    border-radius: 10px;
-    padding: 9px 18px;
-    font-family: 'Nunito', sans-serif;
-    font-size: 13px;
-    font-weight: 800;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-  .btn-secondary:hover { border-color: var(--accent2); color: var(--accent2); }
-
-  .day-group { margin-bottom: 24px; }
-  .day-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: var(--dark);
-    color: white;
-    padding: 10px 16px;
-    border-radius: 12px 12px 0 0;
-    font-weight: 800;
-    font-size: 14px;
-  }
-  .day-total {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 20px;
-    letter-spacing: 1px;
-    color: var(--accent3);
-  }
-
-  .sale-row {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-top: none;
-    padding: 10px 16px;
-    display: grid;
-    grid-template-columns: 80px 1fr 80px;
-    gap: 8px;
-    align-items: center;
-    font-size: 13px;
-  }
-  .sale-row:last-child { border-radius: 0 0 12px 12px; }
-  .sale-time { color: var(--muted); font-weight: 700; font-size: 12px; }
-  .sale-items { font-weight: 700; }
-  .sale-items span { color: var(--muted); font-weight: 600; }
-  .sale-amount { font-weight: 900; color: var(--accent); text-align: right; }
-
-  /* DAGSOVERSIKT */
-  .summary-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 14px;
-    margin-bottom: 24px;
-  }
-  .summary-card {
-    background: var(--surface);
-    border: 2px solid var(--border);
-    border-radius: 16px;
-    padding: 18px;
-    text-align: center;
-  }
-  .summary-card-icon { font-size: 28px; margin-bottom: 4px; }
-  .summary-card-label { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
-  .summary-card-value { font-size: 24px; font-weight: 900; margin-top: 4px; color: var(--dark); }
-  .summary-card-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
-
-  .cash-box {
-    background: var(--dark);
-    color: white;
-    border-radius: 16px;
-    padding: 20px 24px;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 16px;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  .cash-box-item { text-align: center; }
-  .cash-box-label { font-size: 12px; opacity: 0.5; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
-  .cash-box-value { font-family: 'Bebas Neue', sans-serif; font-size: 30px; letter-spacing: 2px; color: var(--accent3); }
-  .cash-box-value.kort-val { color: #c4b5fd; }
-  .cash-box-divider { width: 1px; background: rgba(255,255,255,0.1); height: 50px; margin: 0 auto; }
-
-  .top-products { background: var(--surface); border-radius: 16px; border: 2px solid var(--border); overflow: hidden; }
-  .top-head { background: var(--surface2); padding: 12px 18px; font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
-  .top-row {
-    padding: 12px 18px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid var(--border);
-    font-size: 14px;
-  }
-  .top-row:last-child { border-bottom: none; }
-  .top-row-name { font-weight: 700; }
-  .top-row-right { display: flex; gap: 16px; align-items: center; }
-  .top-row-qty { color: var(--muted); font-size: 13px; }
-  .top-row-amount { font-weight: 900; color: var(--accent); }
-
-  /* Responsive */
-  @media (max-width: 700px) {
-    .pos-layout { grid-template-columns: 1fr; }
-    .cart { position: static; }
-    .product-grid { grid-template-columns: repeat(2, 1fr); }
-    .summary-grid { grid-template-columns: repeat(2, 1fr); }
-    .page { padding: 16px; }
-    .tabs { overflow-x: auto; }
-    .tab { white-space: nowrap; padding: 12px 16px; font-size: 12px; }
-  }
+/* TOAST */
+.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(120px); background: #2a9d8f; color: white; padding: 12px 24px; border-radius: 40px; font-size: 14px; font-weight: 700; z-index: 1000; transition: transform 0.3s cubic-bezier(.34,1.56,.64,1); white-space: nowrap; pointer-events: none; }
+.toast.show { transform: translateX(-50%) translateY(0); }
 </style>
 </head>
 <body>
 
-<header>
-  <div class="logo"><span>🎱</span> Ungdomsklubb</div>
-  <div class="header-date" id="header-date"></div>
-</header>
-
-<div class="tabs">
-  <div class="tab active" onclick="showTab('pos')">🛒 Kasse</div>
-  <div class="tab" onclick="showTab('summary')">📊 Dagsoppgjør</div>
-  <div class="tab" onclick="showTab('history')">📋 Historikk</div>
-  <div class="tab" onclick="showTab('settings')">⚙️ Priser</div>
+<div class="header">
+  <div class="header-logo">🎱 Ungdomsklubb</div>
+  <div class="header-date" id="headerDate"></div>
 </div>
 
-<!-- POS PAGE -->
-<div class="page active" id="page-pos">
-  <div class="pos-layout">
-    <div>
-      <!-- Biljard -->
-      <div class="section-label">🎱 Biljard</div>
-      <div class="product-grid" id="grid-pool"></div>
+<div class="main-tabs">
+  <button class="main-tab active" onclick="showMainTab('kasse')">🛒 Kasse</button>
+  <button class="main-tab" onclick="showMainTab('dag')">📊 Dagsoppgjør</button>
+  <button class="main-tab" onclick="showMainTab('historikk')">📋 Historikk</button>
+  <button class="main-tab" onclick="showMainTab('priser')">⚙️ Priser</button>
+</div>
 
-      <!-- Drikke -->
-      <div class="section-label">🥤 Brus & Drikke</div>
-      <div class="product-grid" id="grid-drink"></div>
-
-      <!-- Mat -->
-      <div class="section-label">🍕 Mat & Snacks</div>
-      <div class="product-grid" id="grid-food"></div>
-
-      <!-- Annet -->
-      <div class="section-label">🎟️ Annet</div>
-      <div class="product-grid" id="grid-other"></div>
-
-      <!-- Kort -->
-      <div class="section-label">🃏 Kortspill</div>
-      <div class="product-grid" id="grid-kort"></div>
-    </div>
-
-    <!-- Cart -->
-    <div class="cart">
-      <div class="cart-head">
-        <span>HANDLEKURV</span>
-        <span class="cart-clear" onclick="clearCart()">Tøm</span>
-      </div>
-      <div class="cart-items" id="cart-items">
-        <div class="cart-empty">Trykk på en vare for å legge til</div>
-      </div>
-      <div class="cart-footer">
-        <div class="cart-total-row">
-          <span class="cart-total-label">TOTALT</span>
-          <span class="cart-total-value" id="cart-total">kr 0,-</span>
-        </div>
-        <button class="btn-pay" onclick="openPayModal()" id="pay-btn" disabled>BETAL</button>
-      </div>
-    </div>
+<!-- KASSE -->
+<div id="page-kasse" class="page active">
+  <div class="person-bar" id="personBar">
+    <button class="add-person-btn" onclick="openNewPersonModal()">+ Ny person</button>
   </div>
+  <div id="kasseContent"></div>
 </div>
 
-<!-- SUMMARY PAGE -->
-<div class="page" id="page-summary">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-    <div>
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;">Dagsoppgjør</div>
-      <div id="summary-date" style="font-size:13px;color:var(--muted);font-weight:700;"></div>
-    </div>
-    <button class="btn-secondary" onclick="exportDay()">⬇ Eksporter CSV</button>
-  </div>
-  <div class="summary-grid" id="summary-grid"></div>
-  <div class="cash-box">
-    <div>
-    <div class="cash-box" id="cash-total"></div>
-  <div class="top-products">
-    <div class="top-head">Mest solgt i dag</div>
-    <div id="top-products-list"></div>
-  </div>
+<!-- DAG -->
+<div id="page-dag" class="page">
+  <div class="section-label">Dagsoppgjør</div>
+  <div class="kpi-grid" id="kpiGrid"></div>
+  <div class="section-label">Per kategori</div>
+  <div class="cat-grid" id="catGrid"></div>
+  <div class="section-label">Mest solgt i dag</div>
+  <div class="top-list" id="topList"></div>
 </div>
 
-<!-- HISTORY PAGE -->
-<div class="page" id="page-history">
-  <div class="history-controls">
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;margin-right:auto;">Salgshistorikk</div>
-    <input type="date" id="history-filter">
-    <button class="btn-secondary" onclick="renderHistory()">Vis alle</button>
-    <button class="btn-secondary" onclick="exportAll()">⬇ Eksporter alt</button>
-  </div>
-  <div id="history-list"></div>
+<!-- HISTORIKK -->
+<div id="page-historikk" class="page">
+  <div class="section-label">Salgshistorikk</div>
+  <div id="historyList"></div>
 </div>
 
-<!-- SETTINGS PAGE -->
-<div class="page" id="page-settings">
-  <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;margin-bottom:20px;">Priser & Varer</div>
-  <div id="settings-list" style="display:flex;flex-direction:column;gap:8px;"></div>
-  <button onclick="saveSettings()" style="margin-top:20px;background:var(--accent2);color:white;border:none;border-radius:10px;padding:12px 28px;font-family:'Nunito',sans-serif;font-size:15px;font-weight:800;cursor:pointer;">💾 Lagre priser</button>
+<!-- PRISER -->
+<div id="page-priser" class="page">
+  <div class="section-label">Endre priser</div>
+  <div id="settingsList"></div>
+  <button class="save-btn" onclick="savePrices()">💾 Lagre priser</button>
 </div>
 
-<!-- PAY MODAL -->
-<div class="modal-overlay" id="pay-modal" style="display:none;" onclick="if(event.target===this)closeModal()">
+<!-- MODALS -->
+<div class="modal-overlay" id="newPersonModal" style="display:none" onclick="if(event.target===this)closeNewPersonModal()">
   <div class="modal">
-    <div class="modal-title">💳 Betaling</div>
-    <div class="modal-sum" id="modal-sum"></div>
-
-    <!-- Betalingsmetode -->
-    <div class="modal-label" style="margin-bottom:8px;">Betalingsmetode</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;">
-      <button id="pay-method-kontant" onclick="setPayMethod('kontant')"
-        style="padding:10px;border-radius:10px;border:2px solid var(--accent3);background:rgba(233,196,106,0.15);color:var(--text);font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;cursor:pointer;">
-        💵 Kontant
-      </button>
-      <button id="pay-method-kort" onclick="setPayMethod('kort')"
-        style="padding:10px;border-radius:10px;border:2px solid var(--border);background:var(--surface2);color:var(--muted);font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;cursor:pointer;">
-        💳 Kort
-      </button>
+    <div class="modal-title">👤 Ny person</div>
+    <p style="font-size:13px;color:#8e8e93;margin-bottom:12px;">Skriv inn navn på kunden</p>
+    <input class="name-input" id="newPersonName" type="text" placeholder="Navn..." onkeydown="if(event.key==='Enter')addPerson()">
+    <div class="modal-btns">
+      <button class="cancel-btn" onclick="closeNewPersonModal()">Avbryt</button>
+      <button class="confirm-btn" style="background:#2a9d8f" onclick="addPerson()">Legg til</button>
     </div>
+  </div>
+</div>
 
-    <!-- Kontant-felt (vises kun ved kontant) -->
-    <div id="cash-section">
-      <div class="modal-label">Mottatt kontant (kr)</div>
-      <input class="modal-input" type="number" id="modal-cash" placeholder="0" oninput="calcChange()">
-      <div class="modal-change">
-        <span class="modal-change-label">Veksel</span>
-        <span class="modal-change-val" id="modal-change">kr 0,-</span>
+<div class="modal-overlay" id="payModal" style="display:none" onclick="if(event.target===this)closePayModal()">
+  <div class="modal">
+    <div class="modal-title" id="payModalTitle">💳 Betaling</div>
+    <div class="modal-sum" id="payModalSum"></div>
+    <div class="modal-items" id="payModalItems"></div>
+    <div class="modal-label">Betalingsmetode</div>
+    <div class="method-grid">
+      <button class="method-btn active-kontant" id="btnKontant" onclick="setPayMethod('kontant')">💵 Kontant</button>
+      <button class="method-btn" id="btnKort" onclick="setPayMethod('kort')">💳 Kort</button>
+    </div>
+    <div id="kontantSection">
+      <div class="modal-label">Mottatt (kr)</div>
+      <input class="modal-input" id="cashInput" type="number" placeholder="0" oninput="calcChange()">
+      <div class="change-box">
+        <span class="change-label">Veksel</span>
+        <span class="change-val" id="changeVal">kr 0,-</span>
       </div>
     </div>
-
-    <!-- Kort-melding -->
-    <div id="kort-section" style="display:none;background:var(--kort-light);border-radius:10px;padding:14px;margin-bottom:14px;text-align:center;">
-      <div style="font-size:24px;margin-bottom:4px;">💳</div>
-      <div style="font-size:13px;font-weight:700;color:var(--kort);">Kortbetaling — ingen veksel</div>
+    <div id="kortSection" style="display:none">
+      <div class="kort-box">
+        <div style="font-size:28px;margin-bottom:4px">💳</div>
+        <div style="font-size:13px;font-weight:700;color:#7c3aed">Kortbetaling — ingen veksel</div>
+      </div>
     </div>
-
     <div class="modal-btns">
-      <button class="btn-cancel" onclick="closeModal()">Avbryt</button>
-      <button class="btn-confirm" onclick="confirmSale()">BEKREFT</button>
+      <button class="cancel-btn" onclick="closePayModal()">Avbryt</button>
+      <button class="confirm-btn" id="confirmPayBtn" onclick="confirmSale()">Bekreft</button>
     </div>
   </div>
 </div>
@@ -630,351 +236,409 @@
 <div class="toast" id="toast"></div>
 
 <script>
-// ---- DEFAULT PRODUCTS ----
+// ---- DATA ----
+const COLORS = ['#e63946','#2a9d8f','#1a6b8a','#7c3aed','#e76f51','#16a34a','#d62828','#db2777'];
+const CAT_INFO = {
+  pool:     { label:'🎱 Biljard',    border:'#1a6b8a', bg:'#d4edf5', text:'#1a6b8a' },
+  bordball: { label:'⚽ Bordball',   border:'#16a34a', bg:'#dcfce7', text:'#16a34a' },
+  drink:    { label:'🥤 Drikke',     border:'#c9a227', bg:'#fdf6e3', text:'#c9a227' },
+  food:     { label:'🍕 Mat',        border:'#e76f51', bg:'#fdeee9', text:'#e76f51' },
+  kort:     { label:'🃏 Kortspill',  border:'#7c3aed', bg:'#ede9fe', text:'#7c3aed' },
+  other:    { label:'🎟️ Annet',      border:'#2a9d8f', bg:'#d6f0ed', text:'#2a9d8f' },
+};
+
 let products = JSON.parse(localStorage.getItem('yk_products') || 'null') || [
-  { id:1, cat:'pool', emoji:'🎱', name:'1 runde biljard', price:50 },
-  { id:2, cat:'pool', emoji:'⏱️', name:'30 min biljard', price:75 },
-  { id:3, cat:'pool', emoji:'🏆', name:'1 time biljard', price:150 },
-  { id:4, cat:'drink', emoji:'🥤', name:'Brus', price:30 },
-  { id:5, cat:'drink', emoji:'🍺', name:'Pils', price:60 },
-  { id:6, cat:'drink', emoji:'💧', name:'Vann', price:15 },
-  { id:7, cat:'food', emoji:'🍕', name:'Pizzaskive', price:30 },
-  { id:8, cat:'food', emoji:'🍫', name:'Sjokolade', price:20 },
-  { id:9, cat:'food', emoji:'🍟', name:'Chips', price:15 },
-  { id:10, cat:'other', emoji:'🎟️', name:'Inngangspenger', price:30 },
-  { id:11, cat:'other', emoji:'💳', name:'Medlemsavgift', price:100 },
-  { id:12, cat:'kort', emoji:'🃏', name:'1 kortspill-runde', price:25 },
-  { id:13, cat:'kort', emoji:'🎮', name:'Turneringsavgift', price:50 },
-  { id:14, cat:'kort', emoji:'🃏', name:'Kortsett (kjøp)', price:80 },
+  {id:1,  cat:'pool',    emoji:'⏱️', name:'5 min biljard',     price:13},
+  {id:2,  cat:'pool',    emoji:'⏱️', name:'10 min biljard',    price:25},
+  {id:3,  cat:'pool',    emoji:'⏱️', name:'15 min biljard',    price:38},
+  {id:4,  cat:'pool',    emoji:'⏱️', name:'20 min biljard',    price:50},
+  {id:5,  cat:'pool',    emoji:'⏱️', name:'25 min biljard',    price:63},
+  {id:6,  cat:'pool',    emoji:'⏱️', name:'30 min biljard',    price:75},
+  {id:7,  cat:'pool',    emoji:'⏱️', name:'35 min biljard',    price:88},
+  {id:8,  cat:'pool',    emoji:'⏱️', name:'40 min biljard',    price:100},
+  {id:9,  cat:'pool',    emoji:'⏱️', name:'45 min biljard',    price:113},
+  {id:10, cat:'pool',    emoji:'⏱️', name:'50 min biljard',    price:125},
+  {id:11, cat:'pool',    emoji:'⏱️', name:'55 min biljard',    price:138},
+  {id:12, cat:'pool',    emoji:'🏆', name:'1 time biljard',    price:150},
+  {id:13, cat:'bordball',emoji:'⚽', name:'Bordball (1 kamp)', price:20},
+  {id:14, cat:'drink',   emoji:'🥤', name:'Brus',              price:30},
+  {id:15, cat:'drink',   emoji:'🍺', name:'Pils',              price:60},
+  {id:16, cat:'drink',   emoji:'💧', name:'Vann',              price:15},
+  {id:17, cat:'drink',   emoji:'🍵', name:'Te',                price:20},
+  {id:18, cat:'drink',   emoji:'☕', name:'Kaffe',             price:30},
+  {id:19, cat:'food',    emoji:'🍔', name:'Hamburger',         price:120},
+  {id:20, cat:'food',    emoji:'🥩', name:'Rød Tibs',          price:250},
+  {id:21, cat:'food',    emoji:'🍗', name:'Hvit Tibs',         price:250},
+  {id:22, cat:'food',    emoji:'🍟', name:'Chips',             price:49},
+  {id:23, cat:'food',    emoji:'🌶️', name:'Kicha Fitfit',      price:149},
+  {id:24, cat:'other',   emoji:'🎟️', name:'Inngangspenger',   price:30},
+  {id:25, cat:'other',   emoji:'💳', name:'Medlemsavgift',     price:100},
+  {id:26, cat:'kort',    emoji:'🃏', name:'1 kortspill-runde', price:25},
+  {id:27, cat:'kort',    emoji:'🎮', name:'Turneringsavgift',  price:50},
+  {id:28, cat:'kort',    emoji:'🃏', name:'Kortsett (kjøp)',   price:80},
 ];
 
 let sales = JSON.parse(localStorage.getItem('yk_sales') || '[]');
-let cart = [];
-
-// ---- INIT ----
-function init() {
-  const now = new Date();
-  document.getElementById('header-date').textContent = now.toLocaleDateString('no-NO', { weekday:'long', day:'numeric', month:'long' });
-  document.getElementById('summary-date').textContent = now.toLocaleDateString('no-NO', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
-  document.getElementById('history-filter').value = now.toISOString().slice(0,10);
-  renderProducts();
-  renderCart();
-  renderSettings();
-  renderHistory();
-  renderSummary();
-}
+let persons = JSON.parse(localStorage.getItem('yk_persons') || '[]');
+let activePersonId = persons.length > 0 ? persons[0].id : null;
+let payingPersonId = null;
+let payMethod = 'kontant';
 
 function save() {
   localStorage.setItem('yk_products', JSON.stringify(products));
   localStorage.setItem('yk_sales', JSON.stringify(sales));
+  localStorage.setItem('yk_persons', JSON.stringify(persons));
 }
 
-function showTab(tab) {
+function kr(n) { return 'kr ' + Number(n).toLocaleString('no-NO') + ',-'; }
+function today() { return new Date().toISOString().slice(0,10); }
+function nowTime() { return new Date().toTimeString().slice(0,5); }
+function personTotal(p) { return (p.items||[]).reduce((s,x) => s + x.price*x.qty, 0); }
+
+// ---- TABS ----
+function showMainTab(tab) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.main-tab').forEach(t => t.classList.remove('active'));
   document.getElementById('page-'+tab).classList.add('active');
   event.target.classList.add('active');
-  if (tab === 'summary') renderSummary();
-  if (tab === 'history') renderHistory();
+  if (tab === 'dag') renderDag();
+  if (tab === 'historikk') renderHistorikk();
+  if (tab === 'priser') renderPriser();
 }
 
-function kr(n) { return 'kr ' + n.toLocaleString('no-NO') + ',-'; }
+// ---- PERSON BAR ----
+function renderPersonBar() {
+  const bar = document.getElementById('personBar');
+  bar.innerHTML = persons.map(p => {
+    const total = personTotal(p);
+    const isActive = p.id === activePersonId;
+    return `<button class="person-btn ${isActive?'active':''}" 
+      style="border-color:${p.color};background:${isActive?p.color:'transparent'};color:${isActive?'white':p.color}"
+      onclick="selectPerson(${p.id})">
+      👤 ${p.name}${total > 0 ? ' <span style="background:rgba(255,255,255,0.25);border-radius:10px;padding:1px 7px;font-size:11px">' + kr(total) + '</span>' : ''}
+    </button>`;
+  }).join('') + `<button class="add-person-btn" onclick="openNewPersonModal()">+ Ny person</button>`;
+}
 
-// ---- PRODUCTS ----
-function renderProducts() {
-  const grids = { pool:'grid-pool', drink:'grid-drink', food:'grid-food', other:'grid-other', kort:'grid-kort' };
-  Object.entries(grids).forEach(([cat, gid]) => {
-    const g = document.getElementById(gid);
-    g.innerHTML = products.filter(p => p.cat === cat).map(p => `
-      <button class="product-btn ${p.cat}" onclick="addToCart(${p.id})">
+function selectPerson(id) {
+  activePersonId = id;
+  renderPersonBar();
+  renderKasse();
+}
+
+// ---- KASSE ----
+function renderKasse() {
+  const content = document.getElementById('kasseContent');
+  const person = persons.find(p => p.id === activePersonId);
+
+  if (!person) {
+    content.innerHTML = `<div class="empty-state">
+      <div class="empty-state-icon">👤</div>
+      <div class="empty-state-title">Ingen person valgt</div>
+      <div class="empty-state-sub">Trykk "+ Ny person" for å begynne</div>
+    </div>`;
+    return;
+  }
+
+  let html = '';
+  Object.entries(CAT_INFO).forEach(([cat, info]) => {
+    const prods = products.filter(p => p.cat === cat);
+    if (prods.length === 0) return;
+    html += `<div class="section-label">${info.label}</div><div class="product-grid">`;
+    prods.forEach(p => {
+      html += `<button class="product-btn" style="border-color:${info.border};background:${info.bg}" onclick="addToCart(${p.id})">
         <span class="product-emoji">${p.emoji}</span>
         <div class="product-name">${p.name}</div>
         <div class="product-price">${kr(p.price)}</div>
-      </button>
-    `).join('');
+      </button>`;
+    });
+    html += `</div>`;
   });
-}
 
-// ---- CART ----
-function addToCart(pid) {
-  const p = products.find(x => x.id === pid);
-  const existing = cart.find(x => x.id === pid);
-  if (existing) existing.qty++;
-  else cart.push({ ...p, qty: 1 });
-  renderCart();
-}
+  // Cart
+  const total = personTotal(person);
+  html += `<div class="cart-box">
+    <div class="cart-head" style="background:${person.color}">
+      <span class="cart-head-title">👤 ${person.name}</span>
+      <button class="cart-clear" onclick="clearCart()">Tøm</button>
+    </div>`;
 
-function changeQty(pid, delta) {
-  const i = cart.findIndex(x => x.id === pid);
-  if (i < 0) return;
-  cart[i].qty += delta;
-  if (cart[i].qty <= 0) cart.splice(i, 1);
-  renderCart();
-}
-
-function clearCart() { cart = []; renderCart(); }
-
-function cartTotal() { return cart.reduce((s, x) => s + x.price * x.qty, 0); }
-
-function renderCart() {
-  const el = document.getElementById('cart-items');
-  const total = cartTotal();
-  if (cart.length === 0) {
-    el.innerHTML = '<div class="cart-empty">Trykk på en vare for å legge til</div>';
+  if (person.items.length === 0) {
+    html += `<div class="cart-empty">Ingen varer ennå — trykk på varene over</div>`;
   } else {
-    el.innerHTML = cart.map(x => `
-      <div class="cart-row">
+    person.items.forEach(x => {
+      html += `<div class="cart-row">
         <div class="cart-row-name">${x.emoji} ${x.name}</div>
-        <div class="cart-row-qty">
+        <div class="qty-wrap">
           <button class="qty-btn minus" onclick="changeQty(${x.id},-1)">−</button>
           <span class="qty-num">${x.qty}</span>
           <button class="qty-btn plus" onclick="changeQty(${x.id},1)">+</button>
         </div>
-        <div class="cart-row-price">${kr(x.price * x.qty)}</div>
-      </div>
-    `).join('');
+        <div class="cart-row-price">${kr(x.price*x.qty)}</div>
+      </div>`;
+    });
   }
-  document.getElementById('cart-total').textContent = kr(total);
-  document.getElementById('pay-btn').disabled = cart.length === 0;
+
+  html += `<div class="cart-footer">
+    <div class="total-row">
+      <span class="total-label">TOTALT</span>
+      <span class="total-val">${kr(total)}</span>
+    </div>
+    <button class="pay-btn" style="background:${person.color}" ${person.items.length===0?'disabled':''} onclick="openPayModal(${person.id})">
+      BETAL — ${person.name}
+    </button>
+  </div></div>`;
+
+  // Andre åpne regninger
+  const others = persons.filter(p => p.id !== activePersonId && p.items.length > 0);
+  if (others.length > 0) {
+    html += `<div class="section-label">Andre åpne regninger</div><div class="open-tabs">`;
+    others.forEach(p => {
+      html += `<div class="open-tab-row" style="border-left-color:${p.color}">
+        <div>
+          <div class="open-tab-name" style="color:${p.color}">👤 ${p.name}</div>
+          <div class="open-tab-items">${p.items.map(x=>`${x.qty}× ${x.name}`).join(', ')}</div>
+        </div>
+        <div class="open-tab-right">
+          <div class="open-tab-total">${kr(personTotal(p))}</div>
+          <button class="open-tab-pay" style="background:${p.color}" onclick="openPayModal(${p.id})">Betal</button>
+        </div>
+      </div>`;
+    });
+    html += `</div>`;
+  }
+
+  content.innerHTML = html;
+}
+
+function addToCart(pid) {
+  const product = products.find(x => x.id === pid);
+  const person = persons.find(p => p.id === activePersonId);
+  if (!person) return;
+  const ex = person.items.find(x => x.id === pid);
+  if (ex) ex.qty++;
+  else person.items.push({...product, qty:1});
+  save();
+  renderPersonBar();
+  renderKasse();
+}
+
+function changeQty(pid, delta) {
+  const person = persons.find(p => p.id === activePersonId);
+  if (!person) return;
+  const i = person.items.findIndex(x => x.id === pid);
+  if (i < 0) return;
+  person.items[i].qty += delta;
+  if (person.items[i].qty <= 0) person.items.splice(i, 1);
+  save();
+  renderPersonBar();
+  renderKasse();
+}
+
+function clearCart() {
+  const person = persons.find(p => p.id === activePersonId);
+  if (person) { person.items = []; save(); renderPersonBar(); renderKasse(); }
+}
+
+// ---- PERSONS ----
+function openNewPersonModal() {
+  document.getElementById('newPersonModal').style.display = 'flex';
+  document.getElementById('newPersonName').value = '';
+  setTimeout(() => document.getElementById('newPersonName').focus(), 100);
+}
+function closeNewPersonModal() { document.getElementById('newPersonModal').style.display = 'none'; }
+
+function addPerson() {
+  const name = document.getElementById('newPersonName').value.trim();
+  if (!name) return;
+  const id = Date.now();
+  const color = COLORS[persons.length % COLORS.length];
+  persons.push({id, name, color, items:[]});
+  activePersonId = id;
+  save();
+  closeNewPersonModal();
+  renderPersonBar();
+  renderKasse();
 }
 
 // ---- PAYMENT ----
-let payMethod = 'kontant';
+function openPayModal(personId) {
+  payingPersonId = personId;
+  payMethod = 'kontant';
+  const person = persons.find(p => p.id === personId);
+  const total = personTotal(person);
+  document.getElementById('payModalTitle').textContent = `💳 Betal — ${person.name}`;
+  document.getElementById('payModalSum').textContent = kr(total);
+  document.getElementById('payModalSum').style.color = person.color;
+  document.getElementById('payModalItems').textContent = person.items.map(x=>`${x.qty}× ${x.name}`).join(' · ');
+  document.getElementById('confirmPayBtn').style.background = person.color;
+  document.getElementById('cashInput').value = '';
+  document.getElementById('changeVal').textContent = 'kr 0,-';
+  setPayMethod('kontant');
+  document.getElementById('payModal').style.display = 'flex';
+  setTimeout(() => document.getElementById('cashInput').focus(), 100);
+}
+
+function closePayModal() { document.getElementById('payModal').style.display = 'none'; }
 
 function setPayMethod(method) {
   payMethod = method;
-  const kBtn = document.getElementById('pay-method-kontant');
-  const cBtn = document.getElementById('pay-method-kort');
+  const kBtn = document.getElementById('btnKontant');
+  const cBtn = document.getElementById('btnKort');
   if (method === 'kontant') {
-    kBtn.style.borderColor = 'var(--accent3)';
-    kBtn.style.background = 'rgba(233,196,106,0.15)';
-    kBtn.style.color = 'var(--text)';
-    cBtn.style.borderColor = 'var(--border)';
-    cBtn.style.background = 'var(--surface2)';
-    cBtn.style.color = 'var(--muted)';
-    document.getElementById('cash-section').style.display = 'block';
-    document.getElementById('kort-section').style.display = 'none';
+    kBtn.className = 'method-btn active-kontant';
+    cBtn.className = 'method-btn';
+    document.getElementById('kontantSection').style.display = 'block';
+    document.getElementById('kortSection').style.display = 'none';
   } else {
-    cBtn.style.borderColor = 'var(--kort)';
-    cBtn.style.background = 'var(--kort-light)';
-    cBtn.style.color = 'var(--kort)';
-    kBtn.style.borderColor = 'var(--border)';
-    kBtn.style.background = 'var(--surface2)';
-    kBtn.style.color = 'var(--muted)';
-    document.getElementById('cash-section').style.display = 'none';
-    document.getElementById('kort-section').style.display = 'block';
+    cBtn.className = 'method-btn active-kort';
+    kBtn.className = 'method-btn';
+    document.getElementById('kontantSection').style.display = 'none';
+    document.getElementById('kortSection').style.display = 'block';
   }
 }
 
-function openPayModal() {
-  payMethod = 'kontant';
-  setPayMethod('kontant');
-  document.getElementById('modal-sum').textContent = kr(cartTotal());
-  document.getElementById('modal-cash').value = '';
-  document.getElementById('modal-change').textContent = 'kr 0,-';
-  document.getElementById('pay-modal').style.display = 'flex';
-  setTimeout(() => document.getElementById('modal-cash').focus(), 100);
-}
-
-function closeModal() { document.getElementById('pay-modal').style.display = 'none'; }
-
 function calcChange() {
-  const received = parseFloat(document.getElementById('modal-cash').value) || 0;
-  const total = cartTotal();
+  const person = persons.find(p => p.id === payingPersonId);
+  const total = personTotal(person);
+  const received = parseFloat(document.getElementById('cashInput').value) || 0;
   const change = Math.max(0, received - total);
-  document.getElementById('modal-change').textContent = kr(change);
+  document.getElementById('changeVal').textContent = kr(change);
 }
 
 function confirmSale() {
-  const now = new Date();
-  const sale = {
+  const person = persons.find(p => p.id === payingPersonId);
+  if (!person) return;
+  const total = personTotal(person);
+  sales.push({
     id: Date.now(),
-    date: now.toISOString().slice(0,10),
-    time: now.toTimeString().slice(0,5),
-    items: cart.map(x => ({ name: x.emoji + ' ' + x.name, qty: x.qty, price: x.price })),
-    total: cartTotal(),
+    date: today(),
+    time: nowTime(),
+    person: person.name,
+    items: person.items.map(x => ({name: x.emoji+' '+x.name, qty: x.qty, price: x.price, cat: x.cat})),
+    total,
     method: payMethod
-  };
-  sales.push(sale);
+  });
+  persons = persons.filter(p => p.id !== payingPersonId);
+  if (activePersonId === payingPersonId) activePersonId = persons.length > 0 ? persons[0].id : null;
   save();
-  closeModal();
-  clearCart();
-  const metodeTekst = payMethod === 'kort' ? '💳 Kortbetaling' : '💵 Kontant';
-  showToast('✅ ' + metodeTekst + ' registrert! ' + kr(sale.total));
-  renderSummary();
+  closePayModal();
+  showToast(`✅ ${person.name} betalt! ${kr(total)}`);
+  renderPersonBar();
+  renderKasse();
 }
 
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
-}
+// ---- DAG ----
+function renderDag() {
+  const ts = sales.filter(s => s.date === today());
+  const total = ts.reduce((s,x) => s+x.total, 0);
+  const kontant = ts.filter(s=>s.method!=='kort').reduce((s,x)=>s+x.total,0);
+  const kort = ts.filter(s=>s.method==='kort').reduce((s,x)=>s+x.total,0);
 
-// ---- SUMMARY ----
-function todaySales() {
-  const today = new Date().toISOString().slice(0,10);
-  return sales.filter(s => s.date === today);
-}
+  document.getElementById('kpiGrid').innerHTML = [
+    ['💵 Kontant', kontant, '#ffd60a', '#1c1c1e'],
+    ['💳 Kort', kort, '#7c3aed', '#7c3aed'],
+    ['🧾 Totalt', total, '#e63946', '#e63946']
+  ].map(([label,val,border,color]) => `
+    <div class="kpi-card" style="border-top:3px solid ${border}">
+      <div class="kpi-label">${label}</div>
+      <div class="kpi-val" style="color:${color}">${kr(val)}</div>
+    </div>`).join('');
 
-function renderSummary() {
-  const ts = todaySales();
-  const total = ts.reduce((s,x) => s + x.total, 0);
-  const kontantTotal = ts.filter(s => s.method !== 'kort').reduce((s,x) => s + x.total, 0);
-  const kortTotal = ts.filter(s => s.method === 'kort').reduce((s,x) => s + x.total, 0);
-  
-  const cats = { pool:0, drink:0, food:0, kort:0, other:0 };
-  const catNames = { pool:'Biljard', drink:'Drikke', food:'Mat', kort:'Kortspill', other:'Annet' };
-  const catEmoji = { pool:'🎱', drink:'🥤', food:'🍕', kort:'🃏', other:'🎟️' };
-  
+  const catTotals = {};
   ts.forEach(s => s.items.forEach(item => {
-    const p = products.find(x => (x.emoji + ' ' + x.name) === item.name);
-    if (p) cats[p.cat] = (cats[p.cat] || 0) + item.price * item.qty;
+    if (!catTotals[item.cat]) catTotals[item.cat] = 0;
+    catTotals[item.cat] += item.price * item.qty;
   }));
+  document.getElementById('catGrid').innerHTML = Object.entries(CAT_INFO).map(([cat,info]) => `
+    <div class="cat-card" style="border-left-color:${info.border}">
+      <div class="cat-card-label">${info.label}</div>
+      <div class="cat-card-val" style="color:${info.text}">${kr(catTotals[cat]||0)}</div>
+    </div>`).join('');
 
-  document.getElementById('summary-grid').innerHTML = Object.entries(cats).map(([cat, val]) => `
-    <div class="summary-card">
-      <div class="summary-card-icon">${catEmoji[cat]}</div>
-      <div class="summary-card-label">${catNames[cat]}</div>
-      <div class="summary-card-value">${kr(val)}</div>
-    </div>
-  `).join('');
-
-  document.getElementById('cash-total').innerHTML = `
-    <div class="cash-box-item">
-      <div class="cash-box-label">💵 Kontant</div>
-      <div class="cash-box-value">${kr(kontantTotal)}</div>
-    </div>
-    <div class="cash-box-divider"></div>
-    <div class="cash-box-item">
-      <div class="cash-box-label">💳 Kort</div>
-      <div class="cash-box-value kort-val">${kr(kortTotal)}</div>
-    </div>
-    <div class="cash-box-divider"></div>
-    <div class="cash-box-item">
-      <div class="cash-box-label">🧾 Totalt</div>
-      <div class="cash-box-value">${kr(total)}</div>
-    </div>
-  `;
-
-  // Top products
   const itemMap = {};
   ts.forEach(s => s.items.forEach(item => {
-    if (!itemMap[item.name]) itemMap[item.name] = { qty:0, total:0 };
+    if (!itemMap[item.name]) itemMap[item.name] = {qty:0,total:0};
     itemMap[item.name].qty += item.qty;
     itemMap[item.name].total += item.price * item.qty;
   }));
-  const sorted = Object.entries(itemMap).sort((a,b) => b[1].total - a[1].total);
-  const topEl = document.getElementById('top-products-list');
-  if (sorted.length === 0) {
-    topEl.innerHTML = '<div class="top-row"><span style="color:var(--muted)">Ingen salg i dag ennå</span></div>';
-  } else {
-    topEl.innerHTML = sorted.map(([name, d]) => `
+  const sorted = Object.entries(itemMap).sort((a,b)=>b[1].total-a[1].total);
+  document.getElementById('topList').innerHTML = sorted.length === 0
+    ? `<div style="padding:20px;text-align:center;color:#8e8e93;font-size:13px">Ingen salg i dag ennå</div>`
+    : sorted.map(([name,d]) => `
       <div class="top-row">
         <span class="top-row-name">${name}</span>
         <div class="top-row-right">
           <span class="top-row-qty">${d.qty} stk</span>
-          <span class="top-row-amount">${kr(d.total)}</span>
+          <span class="top-row-amt">${kr(d.total)}</span>
         </div>
-      </div>
-    `).join('');
-  }
+      </div>`).join('');
 }
 
-// ---- HISTORY ----
-function renderHistory() {
-  const filter = document.getElementById('history-filter').value;
-  let filtered = filter ? sales.filter(s => s.date === filter) : sales;
-  filtered = [...filtered].reverse();
-
-  const el = document.getElementById('history-list');
-  if (filtered.length === 0) {
-    el.innerHTML = '<div style="text-align:center;color:var(--muted);padding:40px;font-size:14px;">Ingen salg funnet</div>';
+// ---- HISTORIKK ----
+function renderHistorikk() {
+  const grouped = {};
+  [...sales].reverse().forEach(s => {
+    if (!grouped[s.date]) grouped[s.date] = [];
+    grouped[s.date].push(s);
+  });
+  const el = document.getElementById('historyList');
+  if (Object.keys(grouped).length === 0) {
+    el.innerHTML = `<div style="text-align:center;color:#8e8e93;padding:40px;font-size:14px">Ingen salg ennå</div>`;
     return;
   }
-
-  // Group by date
-  const groups = {};
-  filtered.forEach(s => {
-    if (!groups[s.date]) groups[s.date] = [];
-    groups[s.date].push(s);
-  });
-
-  el.innerHTML = Object.entries(groups).sort((a,b) => b[0].localeCompare(a[0])).map(([date, daySales]) => {
-    const dayTotal = daySales.reduce((s,x) => s + x.total, 0);
-    const dateStr = new Date(date + 'T12:00:00').toLocaleDateString('no-NO', { weekday:'long', day:'numeric', month:'long' });
-    return `
-      <div class="day-group">
-        <div class="day-header">
-          <span>${dateStr}</span>
-          <span class="day-total">${kr(dayTotal)}</span>
-        </div>
-        ${daySales.map(s => `
-          <div class="sale-row">
-            <span class="sale-time">${s.time} ${s.method === 'kort' ? '💳' : '💵'}</span>
-            <span class="sale-items">${s.items.map(i => `${i.qty}× ${i.name}`).join(', ')}</span>
-            <span class="sale-amount">${kr(s.total)}</span>
-          </div>
-        `).join('')}
-      </div>
-    `;
+  el.innerHTML = Object.entries(grouped).map(([date, daySales]) => {
+    const dayTotal = daySales.reduce((s,x)=>s+x.total,0);
+    const dateStr = new Date(date+'T12:00:00').toLocaleDateString('no-NO',{weekday:'long',day:'numeric',month:'long'});
+    return `<div class="day-group">
+      <div class="day-head"><span>${dateStr}</span><span class="day-total">${kr(dayTotal)}</span></div>
+      ${daySales.map(s => `
+        <div class="sale-row">
+          <span class="sale-time">${s.time} ${s.method==='kort'?'💳':'💵'}</span>
+          ${s.person?`<span class="sale-person">👤 ${s.person}</span>`:''}
+          <span class="sale-items">${s.items.map(i=>`${i.qty}× ${i.name}`).join(', ')}</span>
+          <span class="sale-amt">${kr(s.total)}</span>
+        </div>`).join('')}
+    </div>`;
   }).join('');
 }
 
-// ---- SETTINGS ----
-function renderSettings() {
-  document.getElementById('settings-list').innerHTML = products.map(p => `
-    <div style="background:var(--surface);border:2px solid var(--border);border-radius:12px;padding:14px 16px;display:grid;grid-template-columns:40px 1fr auto;gap:12px;align-items:center;">
-      <div style="font-size:24px;text-align:center;">${p.emoji}</div>
-      <div>
-        <div style="font-weight:800;font-size:14px;">${p.name}</div>
-        <div style="font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;">${{pool:'Biljard',drink:'Drikke',food:'Mat',other:'Annet',kort:'Kortspill'}[p.cat]}</div>
+// ---- PRISER ----
+function renderPriser() {
+  document.getElementById('settingsList').innerHTML = products.map(p => `
+    <div class="setting-row">
+      <span class="setting-emoji">${p.emoji}</span>
+      <div class="setting-info">
+        <div class="setting-name">${p.name}</div>
+        <div class="setting-cat">${CAT_INFO[p.cat]?.label||p.cat}</div>
       </div>
-      <div style="display:flex;align-items:center;gap:6px;">
-        <span style="font-size:13px;color:var(--muted);font-weight:700;">kr</span>
-        <input type="number" value="${p.price}" min="0" id="price_${p.id}" style="width:70px;padding:8px 10px;border:2px solid var(--border);border-radius:8px;font-size:14px;font-weight:800;font-family:'Nunito',sans-serif;color:var(--text);background:var(--bg);outline:none;" onfocus="this.style.borderColor='var(--accent2)'" onblur="this.style.borderColor='var(--border)'">
-      </div>
-    </div>
-  `).join('');
+      <span class="setting-kr">kr</span>
+      <input class="price-input" type="number" id="price_${p.id}" value="${p.price}">
+    </div>`).join('');
 }
 
-function saveSettings() {
+function savePrices() {
   products.forEach(p => {
-    const val = parseFloat(document.getElementById('price_' + p.id).value);
+    const val = parseFloat(document.getElementById('price_'+p.id).value);
     if (!isNaN(val) && val >= 0) p.price = val;
   });
   save();
-  renderProducts();
   showToast('✅ Priser lagret!');
+  renderKasse();
 }
 
-// ---- EXPORT ----
-function exportDay() {
-  const ts = todaySales();
-  const today = new Date().toISOString().slice(0,10);
-  csvDownload(ts, 'Dagsoversikt_' + today + '.csv');
+// ---- TOAST ----
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
 }
 
-function exportAll() {
-  csvDownload(sales, 'Salgshistorikk.csv');
-}
-
-function csvDownload(rows, filename) {
-  const lines = [['Dato','Tid','Betalingsmetode','Varer','Totalt (kr)']];
-  rows.forEach(s => lines.push([
-    s.date, s.time,
-    s.method === 'kort' ? 'Kort' : 'Kontant',
-    s.items.map(i => `${i.qty}x ${i.name}`).join(' | '),
-    s.total
-  ]));
-  const csv = lines.map(r => r.map(v => `"${v}"`).join(',')).join('\n');
-  const a = document.createElement('a');
-  a.href = 'data:text/csv;charset=utf-8,\uFEFF' + encodeURIComponent(csv);
-  a.download = filename;
-  a.click();
-}
-
-init();
+// ---- INIT ----
+document.getElementById('headerDate').textContent = new Date().toLocaleDateString('no-NO',{weekday:'long',day:'numeric',month:'long'});
+renderPersonBar();
+renderKasse();
 </script>
 </body>
 </html>
