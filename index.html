@@ -178,7 +178,11 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 
 <!-- HISTORIKK -->
 <div id="page-historikk" class="page">
-  <div class="section-label">Salgshistorikk</div>
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;flex-wrap:wrap;">
+    <input type="date" id="historyDateFilter" style="padding:9px 12px;border:2px solid #e5e5ea;border-radius:10px;font-size:14px;font-weight:700;font-family:inherit;color:#1c1c1e;background:white;outline:none;flex:1;" onchange="renderHistorikk()">
+    <button onclick="clearDateFilter()" style="padding:9px 14px;border:2px solid #e5e5ea;border-radius:10px;font-size:13px;font-weight:700;background:white;color:#8e8e93;cursor:pointer;white-space:nowrap;">Vis alle</button>
+  </div>
+  <div id="historyTotal" style="margin-bottom:4px;"></div>
   <div id="historyList"></div>
 </div>
 
@@ -576,12 +580,35 @@ function renderDag() {
 }
 
 // ---- HISTORIKK ----
+function clearDateFilter() {
+  document.getElementById('historyDateFilter').value = '';
+  renderHistorikk();
+}
+
 function renderHistorikk() {
+  const filterDate = document.getElementById('historyDateFilter').value;
+  const filtered = filterDate ? sales.filter(s => s.date === filterDate) : sales;
   const grouped = {};
-  [...sales].reverse().forEach(s => {
+  [...filtered].reverse().forEach(s => {
     if (!grouped[s.date]) grouped[s.date] = [];
     grouped[s.date].push(s);
   });
+
+  // Show total for filtered period
+  const totalEl = document.getElementById('historyTotal');
+  if (filterDate && filtered.length > 0) {
+    const tot = filtered.reduce((s,x)=>s+x.total,0);
+    const dateStr = new Date(filterDate+'T12:00:00').toLocaleDateString('no-NO',{weekday:'long',day:'numeric',month:'long'});
+    totalEl.innerHTML = `<div style="background:#1c1c1e;color:white;border-radius:12px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+      <span style="font-size:13px;font-weight:700;">${dateStr}</span>
+      <span style="font-size:20px;font-weight:900;color:#ffd60a;">${kr(tot)}</span>
+    </div>`;
+  } else if (filterDate) {
+    totalEl.innerHTML = `<div style="text-align:center;color:#8e8e93;padding:12px;font-size:13px;">Ingen salg denne dagen</div>`;
+  } else {
+    totalEl.innerHTML = '';
+  }
+
   const el = document.getElementById('historyList');
   if (Object.keys(grouped).length === 0) {
     el.innerHTML = `<div style="text-align:center;color:#8e8e93;padding:40px;font-size:14px">Ingen salg ennå</div>`;
